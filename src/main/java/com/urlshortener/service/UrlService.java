@@ -1,5 +1,6 @@
 package com.urlshortener.service;
 
+import com.urlshortener.dto.UrlDetailResponse;
 import com.urlshortener.model.UrlDetail;
 import com.urlshortener.model.User;
 import com.urlshortener.repository.UrlDetailRepository;
@@ -10,6 +11,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -17,14 +20,15 @@ public class UrlService {
 
     @Autowired
     private UrlDetailRepository urlDetailRepository;
+    @Autowired
+    private UserDetailRepository userDetailRepository;
 
     @Value("${app.base-url}")
     private String baseUrl;
 
     @Value("${app.default-expiry-days}")
     private int expiryDays;
-    @Autowired
-    private UserDetailRepository userDetailRepository;
+
 
     public String createShortCode(String longUrl) {
         int leftLimit = 48; // numeral 0
@@ -70,5 +74,29 @@ public class UrlService {
         urlDetail.setClickCount(urlDetail.getClickCount()+1);
         urlDetailRepository.save(urlDetail);
         return urlDetail.getLongUrl();
+    }
+
+    public List<UrlDetailResponse> urlDetailResponse (){
+        ArrayList<UrlDetailResponse> resultList = new ArrayList<>();
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userDetailRepository.findByUserName(currentUsername).orElseThrow();
+        List<UrlDetail> userUrls= urlDetailRepository.findByUser(user);
+        int i = 0;
+        while(i< userUrls.size()){
+
+            UrlDetailResponse response = new UrlDetailResponse();
+            response.setLongUrl(userUrls.get(i).getLongUrl());
+            response.setCreatedAt(userUrls.get(i).getCreatedAt());
+            response.setExpiresAt(userUrls.get(i).getExpiresAt());
+            response.setClickCount(userUrls.get(i).getClickCount());
+            String shortcode = userUrls.get(i).getShortCode();
+            String shortUrl = baseUrl + "/" + shortcode;
+            response.setShortUrl(shortUrl);
+            resultList.add(response);
+            i++;
+
+        }
+
+        return resultList;
     }
 }

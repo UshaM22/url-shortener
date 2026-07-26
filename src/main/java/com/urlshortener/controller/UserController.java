@@ -15,12 +15,13 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody LoginRegistrationRequest request){
+    public ResponseEntity<String> registerUser(@RequestBody LoginRegistrationRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.registerUser(request));
     }
 
     @GetMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody LoginRegistrationRequest request){
+    public ResponseEntity<String> loginUser(@RequestBody LoginRegistrationRequest request) {
         return ResponseEntity.ok(userService.loginUser(request));
     }
+
 }
