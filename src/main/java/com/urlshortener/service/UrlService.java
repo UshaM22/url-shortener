@@ -1,6 +1,7 @@
 package com.urlshortener.service;
 
 import com.urlshortener.dto.UrlDetailResponse;
+import com.urlshortener.exception.ShortCodeNotFoundException;
 import com.urlshortener.model.UrlDetail;
 import com.urlshortener.model.User;
 import com.urlshortener.repository.UrlDetailRepository;
@@ -56,7 +57,7 @@ public class UrlService {
         urlDetail.setExpiresAt(createdAt.plusDays(expiryDays));
         urlDetail.setLongUrl(longUrl);
         String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userDetailRepository.findByUserName(currentUsername).orElseThrow();
+        User user = userDetailRepository.findByUserName(currentUsername).orElseThrow(()-> new RuntimeException("Authenticated User not found"));
         urlDetail.setUser(user);
         UrlDetail saved = urlDetailRepository.save(urlDetail);
 
@@ -66,7 +67,7 @@ public class UrlService {
     }
 
     public String redirectToLongUrl(String shortCode){
-        UrlDetail urlDetail = urlDetailRepository.findByShortCode(shortCode).orElseThrow();
+        UrlDetail urlDetail = urlDetailRepository.findByShortCode(shortCode).orElseThrow(() -> new ShortCodeNotFoundException("This short link does not exist or has expired"));
         if(LocalDateTime.now().isAfter(urlDetail.getExpiresAt()))
         {
             throw new RuntimeException("The Url is expired");
@@ -79,7 +80,7 @@ public class UrlService {
     public List<UrlDetailResponse> urlDetailResponse (){
         ArrayList<UrlDetailResponse> resultList = new ArrayList<>();
         String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userDetailRepository.findByUserName(currentUsername).orElseThrow();
+        User user = userDetailRepository.findByUserName(currentUsername).orElseThrow(()-> new RuntimeException("Authenticated User not found"));
         List<UrlDetail> userUrls= urlDetailRepository.findByUser(user);
         int i = 0;
         while(i< userUrls.size()){

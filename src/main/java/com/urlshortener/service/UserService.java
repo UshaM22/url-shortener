@@ -2,6 +2,7 @@ package com.urlshortener.service;
 
 import com.urlshortener.JwtUtil;
 import com.urlshortener.dto.LoginRegistrationRequest;
+import com.urlshortener.exception.InvalidCredentialException;
 import com.urlshortener.model.User;
 import com.urlshortener.repository.UserDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,7 @@ public class UserService {
         String userName = request.getUserName();
         String password = request.getPassword();
 
-        User user = userDetailRepository.findByUserName(userName).orElseThrow();
+        User user = userDetailRepository.findByUserName(userName).orElseThrow(()-> new InvalidCredentialException("Username or Password is Wrong"));
         if(!passwordEncoder.matches(password, user.getPassword())){
             return "Entered wrong password";
         }

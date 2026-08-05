@@ -19,7 +19,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.registerUser(request));
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody LoginRegistrationRequest request) {
         return ResponseEntity.ok(userService.loginUser(request));
     }
