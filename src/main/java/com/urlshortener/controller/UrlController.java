@@ -3,6 +3,7 @@ package com.urlshortener.controller;
 import com.urlshortener.dto.ShortUrlRequest;
 import com.urlshortener.dto.UrlDetailResponse;
 import com.urlshortener.service.UrlService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ public class UrlController {
     private UrlService urlService;
 
     @PostMapping("/api/shorten")
-    public ResponseEntity<String> shortenUrl(@RequestBody ShortUrlRequest request) {
+    public ResponseEntity<String> shortenUrl(@Valid @RequestBody ShortUrlRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(urlService.createShortCode(request.getLongUrl()));
     }
 
