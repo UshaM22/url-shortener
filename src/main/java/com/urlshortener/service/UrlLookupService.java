@@ -17,7 +17,6 @@ public class UrlLookupService {
 
     @Cacheable(value = "urls", key = "#shortCode")
     public UrlDetail getByShortCode(String shortCode){
-        System.out.println("HITTING DATABASE for: " + shortCode);
         UrlDetail urlDetail = urlDetailRepository.findByShortCode(shortCode).orElseThrow(() -> new ShortCodeNotFoundException("This short link does not exist or has expired"));
         return urlDetail;
     }
