@@ -3,6 +3,7 @@ package com.urlshortener.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -10,7 +11,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "url_details")
 @Data
-public class UrlDetail {
+public class UrlDetail implements Serializable {
 
     @Column
     @Id @GeneratedValue(strategy = IDENTITY)

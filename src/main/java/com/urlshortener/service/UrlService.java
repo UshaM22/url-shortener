@@ -1,7 +1,6 @@
 package com.urlshortener.service;
 
 import com.urlshortener.dto.UrlDetailResponse;
-import com.urlshortener.exception.ShortCodeNotFoundException;
 import com.urlshortener.model.UrlDetail;
 import com.urlshortener.model.User;
 import com.urlshortener.repository.UrlDetailRepository;
@@ -23,6 +22,9 @@ public class UrlService {
     private UrlDetailRepository urlDetailRepository;
     @Autowired
     private UserDetailRepository userDetailRepository;
+
+    @Autowired
+    private UrlLookupService urlLookupService;
 
     @Value("${app.base-url}")
     private String baseUrl;
@@ -67,13 +69,12 @@ public class UrlService {
     }
 
     public String redirectToLongUrl(String shortCode){
-        UrlDetail urlDetail = urlDetailRepository.findByShortCode(shortCode).orElseThrow(() -> new ShortCodeNotFoundException("This short link does not exist or has expired"));
+        UrlDetail urlDetail = urlLookupService.getByShortCode(shortCode);
         if(LocalDateTime.now().isAfter(urlDetail.getExpiresAt()))
         {
             throw new RuntimeException("The Url is expired");
         }
-        urlDetail.setClickCount(urlDetail.getClickCount()+1);
-        urlDetailRepository.save(urlDetail);
+        urlDetailRepository.incrementClickCount(shortCode);
         return urlDetail.getLongUrl();
     }
 
