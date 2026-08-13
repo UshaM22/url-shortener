@@ -49,11 +49,13 @@ public class UserService {
 
         User user = userDetailRepository.findByUserName(userName).orElseThrow(()-> new InvalidCredentialException("Username or Password is Wrong"));
         if(!passwordEncoder.matches(password, user.getPassword())){
-            return "Entered wrong password";
+            throw new InvalidCredentialException("Username or Password is Wrong");
         }
 
         return jwtUtil.generateToken(userName);
     }
+
+
 
 
 }
