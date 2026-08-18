@@ -26,6 +26,7 @@ each link has been clicked. Every user's links are private to them, protected by
 - **Validation:** Spring Boot Starter Validation
 - **Testing:** JUnit 5, Mockito
 - **Build:** Maven
+- ** API Documentation: Swagger / OpenAPI 
 
 ## Architecture
 
@@ -104,6 +105,12 @@ Authorization: Bearer <your-token>
    ```
 
 The API will be available at `http://localhost:8080`.
+
+5. Swagger/OpenAPI:
+ 
+   Once the application is running, the interactive API documentation is available at
+   ```http://localhost:8080/swagger-ui/index.html ```
+
 
 ## Running Tests
 
